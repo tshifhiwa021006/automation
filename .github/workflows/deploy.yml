@@ -1,4 +1,4 @@
-ame: Auto Create & Deploy Website
+name: Auto Create & Deploy Website
 
 on:
   push:
@@ -22,32 +22,20 @@ jobs:
         run: |
           echo "<h1>Auto Generated Website 🚀</h1>" > index.html
 
-      - name: Commit generated file
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add index.html
-          git commit -m "Auto create index.html" || echo "No changes"
-          git push || true
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
