@@ -19,12 +19,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Run Linter
-        uses: super-linter/super-linter@v8
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: true
+        uses: super-linter/super-linter@60e32b5d1fbee12edd0a0a5e186a0cfc97d4e91f
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
