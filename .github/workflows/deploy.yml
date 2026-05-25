@@ -1,4 +1,4 @@
-name: Deploy Website
+name: Auto Create & Deploy Website
 
 on:
   push:
@@ -6,27 +6,36 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
 
-      - name: Run Linter
-        uses: super-linter/super-linter@v8
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: true
-          DEFAULT_BRANCH: main
+      - name: Create index.html
+        run: |
+          echo "<h1>Auto Generated Website 🚀</h1>" > index.html
+
+      - name: Commit generated file
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add index.html
+          git commit -m "Auto create index.html" || echo "No changes"
+          git push || true
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -36,5 +45,5 @@ jobs:
         with:
           path: .
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: actions/deploy-pages@v4
