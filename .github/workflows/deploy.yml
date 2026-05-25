@@ -1,0 +1,22 @@
+name: Universal Automation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-all-files:
+    name: Test All Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Super-Linter
+        uses: super-linter/super-linter@v8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          VALIDATE_ALL_CODEBASE: true
